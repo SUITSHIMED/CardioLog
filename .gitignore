@@ -1,0 +1,23 @@
+# Node.js
+node_modules/
+
+# Environment variables
+.env
+
+# Frontend (Expo)
+frontend/.expo/
+frontend/ios/
+frontend/android/
+frontend/web-build/
+frontend/dist/
+
+# Backend
+backend/build/
+backend/dist/
+backend/.cache/
+
+# OS / IDE
+.DS_Store
+.vscode/
+.idea/
+*.log
