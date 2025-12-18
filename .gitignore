@@ -1,23 +1,31 @@
 # Node.js
-node_modules/
+**/node_modules/
 
 # Environment variables
-.env
+.env*
+!.env.example
 
 # Frontend (Expo)
 frontend/.expo/
+frontend/.expo-shared/
 frontend/ios/
 frontend/android/
 frontend/web-build/
 frontend/dist/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
 
 # Backend
 backend/build/
 backend/dist/
 backend/.cache/
+backend/coverage/
+backend/.env
 
 # OS / IDE
 .DS_Store
+Thumbs.db
 .vscode/
 .idea/
 *.log
