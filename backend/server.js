@@ -39,14 +39,19 @@ startServer(); */
 
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
+import morgan from "morgan";
 import { sequelize } from "./models/index.js";
 import authRoutes from "./routes/authRoutes.js";
+import profileRoutes from "./routes/profileRoutes.js";
+
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
-
+app.use(cors());
+app.use(morgan("dev"));
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -54,6 +59,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/profile", profileRoutes);
+
 
 const startServer = async () => {
   try {
