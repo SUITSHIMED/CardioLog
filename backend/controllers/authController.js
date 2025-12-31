@@ -1,5 +1,7 @@
 import bcrypt from "bcrypt"
 import User from "../models/user.js"
+import jwt from "jsonwebtoken";
+
 
 export const register = async (req , res ) => {
     try {
@@ -45,14 +47,31 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    return res.status(200).json({
-      message: "Login successful",
-      userId: user.id.toString(), 
-    });
+   const token = jwt.sign(
+  { id: user.id },
+  process.env.JWT_SECRET,
+  { expiresIn: "7d" }
+);
+
+return res.status(200).json({
+  message: "Login successful",
+  token,
+  userId: user.id,
+});
+
 
   } catch (error) {
     console.error("Login error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+export const me = async (req, res) => {
+  res.json({
+    id: req.user.id,
+    email: req.user.email,
+    createdAt: req.user.createdAt,
+  });
+};
+
+
 
