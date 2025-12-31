@@ -1,29 +1,22 @@
 import { View, TextInput, Alert, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import authService from "../src/services/authService";
 
 export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const login = async () => {
-    try {
-      const res = await fetch("http://192.168.1.103:3000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      if (!res.ok) throw new Error("Login failed");
-      const data = await res.json();
-      await AsyncStorage.setItem("userId", data.userId);
-      router.replace("/index");
-    } catch (err) {
-      Alert.alert("Error", "Invalid credentials");
-    }
-  };
-
+ const login = async () => {
+  try {
+    await authService.login(email, password);
+    router.replace("/");
+  } catch (err) {
+    console.error("Login Error Details:", err);
+    Alert.alert("Error", err.message);
+  }
+};
   return (
     <View style={styles.container}>
       <Text style={styles.title}>CardioLog</Text>
