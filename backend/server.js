@@ -44,6 +44,7 @@ import morgan from "morgan";
 import { sequelize } from "./models/index.js";
 import authRoutes from "./routes/authRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
+import readingRoutes from "./routes/readingRoutes.js";
 
 
 dotenv.config();
@@ -60,6 +61,8 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
+app.use("/api/readings", readingRoutes);
+
 
 
 const startServer = async () => {
