@@ -2,11 +2,14 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useEffect, useState } from "react";
 import authService from "../src/services/authService";
 import { useRouter } from "expo-router";
+import api from "../src/api/api";
 
 
 export default function Dashboard() {
    const [user, setUser] = useState(null);
    const router = useRouter();
+   const [stats, setStats] = useState(null);
+
 
 
   useEffect(() => {
@@ -18,6 +21,11 @@ export default function Dashboard() {
           router.replace("/login");
           return;
         }
+        const statsRes = await api.fetchWithAuth("/readings/stats");
+if (statsRes.res.ok) {
+  setStats(statsRes.data);
+}
+
 
         const data = await authService.me();
         console.log("ME:", data);
@@ -38,6 +46,26 @@ export default function Dashboard() {
   <Text style={styles.emoji}>❤️</Text>
   <Text style={styles.welcome}>Welcome {user?.email}</Text>
   <Text style={styles.subtitle}>Your heart health journey starts here.</Text>
+  {stats && (
+  <View style={styles.statsCard}>
+    <Text style={styles.statTitle}>Latest Reading</Text>
+    <Text style={styles.statValue}>
+      {stats.latest.systolic}/{stats.latest.diastolic}
+    </Text>
+    <Text style={styles.statSub}>❤️ {stats.latest.pulse} bpm</Text>
+
+    <View style={styles.divider} />
+
+    <Text style={styles.statSub}>
+      Avg BP: {Math.round(stats.stats.avgSystolic)}/
+      {Math.round(stats.stats.avgDiastolic)}
+    </Text>
+    <Text style={styles.statSub}>
+      Avg Pulse: {Math.round(stats.stats.avgPulse)} bpm
+    </Text>
+  </View>
+)}
+
   <TouchableOpacity 
     style={styles.addButton} 
     onPress={() => router.push("/add-reading")} >
@@ -48,7 +76,18 @@ export default function Dashboard() {
     onPress={() => router.push("/history")} >
     <Text style={styles.addButtonText}>History</Text>
   </TouchableOpacity>
+  <TouchableOpacity
+  style={styles.logout}
+  onPress={async () => {
+    await authService.logout();
+    router.replace("/login");
+  }}>
+
+  <Text style={styles.logoutText}>Logout</Text>
+</TouchableOpacity>
 </View>
+
+
   );
 }
 
@@ -90,4 +129,42 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 16,
   },
+  statsCard: {
+  backgroundColor: "#fff",
+  padding: 20,
+  borderRadius: 16,
+  marginTop: 20,
+},
+statTitle: {
+  fontSize: 16,
+  fontWeight: "600",
+  color: "#0D9488",
+},
+statValue: {
+  fontSize: 28,
+  fontWeight: "bold",
+  marginVertical: 6,
+},
+statSub: {
+  color: "#475569",
+},
+divider: {
+  height: 1,
+  backgroundColor: "#E5E7EB",
+  marginVertical: 10,
+},
+logout: {
+  marginTop: 30,
+  padding: 14,
+  borderRadius: 12,
+  borderWidth: 1,
+  borderColor: "#EF4444",
+},
+logoutText: {
+  textAlign: "center",
+  color: "#EF4444",
+  fontWeight: "600",
+},
+
+
 });
