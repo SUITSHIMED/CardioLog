@@ -1,4 +1,5 @@
 import { Reading } from "../models/index.js";
+import { Sequelize } from "sequelize";
 
 export const addReading = async (req, res) => {
 	try {
@@ -32,4 +33,26 @@ export const getMyReadings = async (req, res) => {
 	} catch (e) {
 		res.status(500).json({ message: "Failed to fetch readings" });
 	}
+};
+export const getReadingStats = async (req, res) => {
+  try {
+    const stats = await Reading.findOne({
+      where: { userId: req.user.id },
+      attributes: [
+        [Sequelize.fn("AVG", Sequelize.col("systolic")), "avgSystolic"],
+        [Sequelize.fn("AVG", Sequelize.col("diastolic")), "avgDiastolic"],
+        [Sequelize.fn("AVG", Sequelize.col("pulse")), "avgPulse"],
+      ],
+      raw: true,
+    });
+
+    const latest = await Reading.findOne({
+      where: { userId: req.user.id },
+      order: [["createdAt", "DESC"]],
+    });
+
+    res.json({ stats, latest });
+  } catch (e) {
+    res.status(500).json({ message: "Failed to load stats" });
+  }
 };
