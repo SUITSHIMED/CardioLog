@@ -43,6 +43,11 @@ export default function Dashboard() {
     onPress={() => router.push("/add-reading")} >
     <Text style={styles.addButtonText}>+ Add New Reading</Text>
   </TouchableOpacity>
+  <TouchableOpacity 
+    style={styles.addButton} 
+    onPress={() => router.push("/history")} >
+    <Text style={styles.addButtonText}>History</Text>
+  </TouchableOpacity>
 </View>
   );
 }
