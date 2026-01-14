@@ -34,66 +34,47 @@ export default function AddReading() {
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.title}>Add Reading</Text>
+            <View style={styles.header}>
+			    <Text style={styles.title}>New Reading</Text>
+                <Text style={styles.desc}>Enter your blood pressure details exactly as they appear on your monitor.</Text>
+            </View>
 
-			<TextInput
-				style={styles.input}
-				placeholder="Systolic"
-				keyboardType="numeric"
-				onChangeText={setSystolic}
-			/>
+            <View style={styles.form}>
+                <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Systolic (Upper)</Text>
+                    <TextInput style={styles.input} placeholder="120" keyboardType="numeric" onChangeText={setSystolic} />
+                </View>
 
-			<TextInput
-				style={styles.input}
-				placeholder="Diastolic"
-				keyboardType="numeric"
-				onChangeText={setDiastolic}
-			/>
+                <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Diastolic (Lower)</Text>
+                    <TextInput style={styles.input} placeholder="80" keyboardType="numeric" onChangeText={setDiastolic} />
+                </View>
 
-			<TextInput
-				style={styles.input}
-				placeholder="Pulse"
-				keyboardType="numeric"
-				onChangeText={setPulse}
-			/>
+                <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Pulse (BPM)</Text>
+                    <TextInput style={styles.input} placeholder="72" keyboardType="numeric" onChangeText={setPulse} />
+                </View>
 
-			<TouchableOpacity style={styles.button} onPress={save}>
-				<Text style={styles.buttonText}>Save</Text>
-			</TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={save}>
+                    <Text style={styles.buttonText}>Save Reading</Text>
+                </TouchableOpacity>
+            </View>
 		</View>
 	);
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: colors.background,
-		padding: 20,
-		justifyContent: "center",
-	},
-	title: {
-		fontSize: 24,
-		fontWeight: "bold",
-		color: colors.dark,
-		marginBottom: 20,
-	},
-	input: {
-		backgroundColor: colors.card,
-		padding: 14,
-		borderRadius: 12,
-		marginBottom: 12,
-		borderWidth: 1,
-		borderColor: "#E2E8F0",
-	},
-	button: {
-		backgroundColor: colors.primary,
-		padding: 16,
-		borderRadius: 14,
-		alignItems: "center",
-	},
-	buttonText: {
-		color: "#fff",
-		fontSize: 16,
-		fontWeight: "600",
-	},
+	container: { flex: 1, backgroundColor: "#FFFFFF", padding: 24 },
+    header: { marginTop: 60, marginBottom: 40 },
+	title: { fontSize: 32, fontWeight: "800", color: "#1E293B" },
+    desc: { fontSize: 16, color: "#64748B", marginTop: 8, lineHeight: 22 },
+    inputGroup: { marginBottom: 20 },
+    label: { fontSize: 14, fontWeight: "700", color: "#475569", marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.5 },
+	input: { 
+        backgroundColor: "#F8FAFC", padding: 16, borderRadius: 14, 
+        fontSize: 18, fontWeight: '600', color: '#1E293B',
+        borderWidth: 1, borderColor: "#E2E8F0" 
+    },
+	button: { backgroundColor: "#E11D48", padding: 20, borderRadius: 16, alignItems: "center", marginTop: 20 },
+	buttonText: { color: "#fff", fontSize: 18, fontWeight: "700" },
 });
