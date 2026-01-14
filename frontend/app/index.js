@@ -129,39 +129,6 @@ export default function Dashboard() {
           </View>
         </View>
       </View>
-      {/* 3. Health Insights Section */}
-<View style={styles.insightSection}>
-  <Text style={styles.sectionTitle}>Daily Insights</Text>
-
-  <View style={styles.insightCard}>
-    <View style={styles.insightIconContainer}>
-      <Text style={{ fontSize: 20 }}>💡</Text>
-    </View>
-
-    <View style={styles.insightTextContainer}>
-      <Text style={styles.insightTitle}>Health Tip</Text>
-      <Text style={styles.insightDesc}>
-        Reducing salt intake to less than 5g daily helps lower blood pressure.
-      </Text>
-    </View>
-  </View>
-
-  <View style={styles.activityRow}>
-    <View style={styles.activityBox}>
-      <Text style={styles.activityNumber}>
-        {stats?.stats?.count || 0}
-      </Text>
-      <Text style={styles.activityLabel}>Total Logs</Text>
-    </View>
-
-    <View style={styles.activityBox}>
-      <Text style={styles.activityNumber}>0</Text>
-      <Text style={styles.activityLabel}>This Week</Text>
-    </View>
-  </View>
-</View>
-
-
       {/* Actions */}
       <View style={styles.menuSection}>
         <TouchableOpacity
@@ -171,18 +138,21 @@ export default function Dashboard() {
           <Text style={styles.primaryButtonText}>+ New Reading</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.secondaryButton}
-          onPress={() => router.push("/history")}
-        >
-          <Text style={styles.secondaryButtonText}>View History</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.secondaryButton}
-          onPress={() => router.push("/trends")}
-        >
-          <Text style={styles.secondaryButtonText}>View Trends</Text>
-        </TouchableOpacity>
+        <View style={styles.row}>
+          <TouchableOpacity
+            style={styles.secondaryButton}
+            onPress={() => router.push("/history")}
+          >
+            <Text style={styles.secondaryButtonText}>View History</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.secondaryButton}
+            onPress={() => router.push("/trends")}
+          >
+            <Text style={styles.secondaryButtonText}>View Trends</Text>
+          </TouchableOpacity>
+        </View>
 
         <TouchableOpacity
           style={styles.logout}
@@ -221,42 +191,13 @@ const styles = StyleSheet.create({
   gridValue: { color: "#FFFFFF", fontSize: 18, fontWeight: "700" },
   gridUnit: { fontSize: 12, fontWeight: '400' },
 
-  // Insight Section (The new stuff)
-  insightSection: { marginTop: 30 },
-  sectionTitle: { fontSize: 18, fontWeight: "700", color: "#1E293B", marginBottom: 15 },
-  insightCard: { 
-    backgroundColor: "#FFFFFF", 
-    padding: 16, 
-    borderRadius: 20, 
-    flexDirection: 'row', 
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#E2E8F0'
-  },
-  insightIconContainer: { width: 45, height: 45, backgroundColor: '#FEF3C7', borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
-  insightTextContainer: { marginLeft: 15, flex: 1 },
-  insightTitle: { fontSize: 14, fontWeight: "700", color: "#1E293B" },
-  insightDesc: { fontSize: 13, color: "#64748B", marginTop: 2, lineHeight: 18 },
-  
-  activityRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 15 },
-  activityBox: { 
-    backgroundColor: "#FFFFFF", 
-    width: '48%', 
-    padding: 15, 
-    borderRadius: 20, 
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#E2E8F0'
-  },
-  activityNumber: { fontSize: 20, fontWeight: "800", color: "#1E293B" },
-  activityLabel: { fontSize: 12, color: "#94A3B8", marginTop: 2 },
-
   // Buttons
-  menuSection: { marginTop: 'auto', marginBottom: 30 },
+  menuSection: { marginTop: 20, marginBottom: 30 },
   primaryButton: { backgroundColor: "#E11D48", padding: 18, borderRadius: 18, alignItems: "center", marginBottom: 12 },
   primaryButtonText: { color: "#fff", fontSize: 16, fontWeight: "700" },
-  secondaryButton: { backgroundColor: "#fff", padding: 18, borderRadius: 18, alignItems: "center", borderWidth: 1, borderColor: "#E2E8F0" },
-  secondaryButtonText: { color: "#1E293B", fontSize: 16, fontWeight: "700" },
-  logout: { marginTop: 15, alignItems: 'center' },
+  row: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 },
+  secondaryButton: { backgroundColor: "#fff", padding: 14, borderRadius: 12, alignItems: "center", borderWidth: 1, borderColor: "#E2E8F0", width: '48%' },
+  secondaryButtonText: { color: "#1E293B", fontSize: 15, fontWeight: "700" },
+  logout: { marginTop: 6, alignItems: 'center' },
   logoutText: { color: "#94A3B8", fontWeight: "600", fontSize: 14 }
 });

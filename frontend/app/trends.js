@@ -6,7 +6,7 @@ import api from "../src/api/api";
 const screenWidth = Dimensions.get("window").width;
 
 const fetchReadings = async () => {
-  const res = await api.fetchWithAuth("/readings");
+  const res = await api.fetchWithAuth("/readings/my");
   if (!res.res.ok) throw new Error("READINGS_ERROR");
   return res.data;
 };
@@ -18,11 +18,15 @@ export default function Trends() {
   });
 
   if (isLoading) {
-    return <Text style={styles.center}>Loading trends...</Text>;
+    return <View style={styles.center}><Text>Loading trends...</Text></View>;
   }
 
   if (error || !data?.length) {
-    return <Text style={styles.center}>No data available</Text>;
+    return (
+      <View style={styles.center}>
+        <Text>No data available</Text>
+      </View>
+    );
   }
 
   const chartData = {
@@ -67,5 +71,5 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: "#F8FAFC" },
   title: { fontSize: 18, fontWeight: "700", marginBottom: 20 },
   chart: { borderRadius: 16 },
-  center: { textAlign: "center", marginTop: 40 },
+  center: { flex: 1, justifyContent: "center", alignItems: "center" },
 });
