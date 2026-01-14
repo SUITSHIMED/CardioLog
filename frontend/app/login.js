@@ -34,30 +34,17 @@ export default function Login() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1,
-     justifyContent: "center",
-      padding: 20,
-       backgroundColor: "#F9FAFB" },
-  title: { fontSize: 32,
-     fontWeight: "bold",
-      color: "#E11D48",
-       marginBottom: 40,
-        textAlign: "center" },
-  input: { backgroundColor: "#fff",
-     padding: 15,
-      borderRadius: 10,
-       marginBottom: 15,
-        borderWidth: 1,
-         borderColor: "#E5E7EB" },
-  button: { backgroundColor: "#E11D48",
-     padding: 15,
-      borderRadius: 10,
-       alignItems: "center" },
-  buttonText: { color: "#fff",
-     fontSize: 18,
-      fontWeight: "600" },
-  linkText: { color: "#4B5563",
-    marginTop: 20,
-     textAlign: "center" }
+const styles =  StyleSheet.create({
+  container: { flex: 1, justifyContent: "center", padding: 24, backgroundColor: "#F8FAFC" },
+  brandArea: { alignItems: 'center', marginBottom: 40 },
+  title: { fontSize: 40, fontWeight: "900", color: "#E11D48", letterSpacing: -1 },
+  tagline: { fontSize: 16, color: "#64748B", marginTop: 4 },
+  card: { backgroundColor: '#fff', padding: 24, borderRadius: 24, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 10, elevation: 5 },
+  input: { 
+    backgroundColor: "#F1F5F9", padding: 16, borderRadius: 12, 
+    marginBottom: 15, borderWidth: 1, borderColor: "#E2E8F0", fontSize: 16 
+  },
+  button: { backgroundColor: "#E11D48", padding: 18, borderRadius: 12, alignItems: "center", marginTop: 10 },
+  buttonText: { color: "#fff", fontSize: 18, fontWeight: "700" },
+  linkText: { color: "#64748B", marginTop: 25, textAlign: "center", fontWeight: '600' }
 });
