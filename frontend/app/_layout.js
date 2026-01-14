@@ -11,7 +11,7 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
-        <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }} edges={["top", "bottom"]}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#0e0e0e" }} edges={["top", "bottom"]}>
           <Stack
             screenOptions={{
               headerShown: false,
@@ -22,6 +22,7 @@ export default function RootLayout() {
             <Stack.Screen name="register" />
             <Stack.Screen name="index" />
             <Stack.Screen name="trends" />
+            <Stack.Screen name="profile" />
           </Stack>
         </SafeAreaView>
       </QueryClientProvider>
