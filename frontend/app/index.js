@@ -163,6 +163,12 @@ export default function Dashboard() {
         >
           <Text style={styles.secondaryButtonText}>View Profile</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.fullWidthButton}
+          onPress={() => router.push("/settingsExport")}
+        >
+          <Text style={styles.secondaryButtonText}>Settings & Export</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.logout}
@@ -212,4 +218,5 @@ const styles = StyleSheet.create({
   secondaryButtonText: { color: "#1E293B", fontSize: 15, fontWeight: "700" },
   logout: { marginTop: 6, alignItems: 'center' },
   logoutText: { color: "#94A3B8", fontWeight: "600", fontSize: 14 }
+  
 });
