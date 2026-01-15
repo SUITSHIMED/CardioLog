@@ -9,9 +9,18 @@ const Profile = sequelize.define("Profile", {
     primaryKey: true,
   },
 
+  userId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    references: {
+      model: User,
+      key: "id",
+    },
+  },
+
   name: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
 
   age: {
@@ -28,10 +37,14 @@ const Profile = sequelize.define("Profile", {
     type: DataTypes.FLOAT,
     allowNull: true,
   },
+
+  bloodType: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 });
 
-//association User exists --> Profile belongs to User
-//one user = one profile (1–1 relation)
+
 User.hasOne(Profile, { foreignKey: "userId", onDelete: "CASCADE" });
 Profile.belongsTo(User, { foreignKey: "userId" });
 
