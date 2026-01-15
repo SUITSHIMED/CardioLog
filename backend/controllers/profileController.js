@@ -1,4 +1,4 @@
-import { Profile, User } from "../models/index.js";
+import { Profile } from "../models/index.js";
 
 export const getProfileByUserId = async (req, res) => {
   try {
@@ -15,10 +15,6 @@ export const getProfileByUserId = async (req, res) => {
 
     const profile = await Profile.findOne({
       where: { userId },
-      include: {
-        model: User,
-        attributes: ["id", "email"],
-      },
     });
 
     if (!profile) {
@@ -29,5 +25,29 @@ export const getProfileByUserId = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error fetching profile" });
+  }
+};
+
+export const updateMyProfile = async (req, res) => {
+  try {
+    const userId = req.user.id; // from JWT middleware
+    const { age, weight, bloodType } = req.body;
+
+    const profile = await Profile.findOne({ where: { userId } });
+
+    if (!profile) {
+      return res.status(404).json({ message: "Profile not found" });
+    }
+
+    await profile.update({
+      age,
+      weight,
+      bloodType,
+    });
+
+    res.json(profile);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to update profile" });
   }
 };

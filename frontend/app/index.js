@@ -129,6 +129,7 @@ export default function Dashboard() {
           </View>
         </View>
       </View>
+
       {/* Actions */}
       <View style={styles.menuSection}>
         <TouchableOpacity
@@ -138,6 +139,7 @@ export default function Dashboard() {
           <Text style={styles.primaryButtonText}>+ New Reading</Text>
         </TouchableOpacity>
 
+        {/* First Row - History & Trends */}
         <View style={styles.row}>
           <TouchableOpacity
             style={styles.secondaryButton}
@@ -153,6 +155,14 @@ export default function Dashboard() {
             <Text style={styles.secondaryButtonText}>View Trends</Text>
           </TouchableOpacity>
         </View>
+
+        {/* Second Row - Profile */}
+        <TouchableOpacity
+          style={styles.fullWidthButton}
+          onPress={() => router.push("/profile")}
+        >
+          <Text style={styles.secondaryButtonText}>View Profile</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.logout}
@@ -171,6 +181,7 @@ export default function Dashboard() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#F8FAFC", paddingHorizontal: 24, paddingTop: 50 },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   headerSection: { marginBottom: 24 },
   welcome: { fontSize: 28, fontWeight: "800", color: "#1E293B" },
   subtitle: { fontSize: 16, color: "#64748B", marginTop: 4 },
@@ -197,6 +208,7 @@ const styles = StyleSheet.create({
   primaryButtonText: { color: "#fff", fontSize: 16, fontWeight: "700" },
   row: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 },
   secondaryButton: { backgroundColor: "#fff", padding: 14, borderRadius: 12, alignItems: "center", borderWidth: 1, borderColor: "#E2E8F0", width: '48%' },
+  fullWidthButton: { backgroundColor: "#fff", padding: 14, borderRadius: 12, alignItems: "center", borderWidth: 1, borderColor: "#E2E8F0", width: '100%', marginBottom: 12 },
   secondaryButtonText: { color: "#1E293B", fontSize: 15, fontWeight: "700" },
   logout: { marginTop: 6, alignItems: 'center' },
   logoutText: { color: "#94A3B8", fontWeight: "600", fontSize: 14 }
