@@ -23,6 +23,7 @@ export default function RootLayout() {
             <Stack.Screen name="index" />
             <Stack.Screen name="trends" />
             <Stack.Screen name="profile" />
+            <Stack.Screen name="settingsExport" />
           </Stack>
         </SafeAreaView>
       </QueryClientProvider>
