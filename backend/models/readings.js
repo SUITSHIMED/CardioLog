@@ -3,7 +3,7 @@ import sequelize from "../config/database.js";
 
 const Reading = sequelize.define("Reading", {
 	id: {
-		type: DataTypes.INTEGER,
+		type: DataTypes.UUID,
 		autoIncrement: true,
 		primaryKey: true,
 	},
@@ -18,6 +18,10 @@ const Reading = sequelize.define("Reading", {
 	pulse: {
 		type: DataTypes.INTEGER,
 		allowNull: false,
+	},
+	timestamp: {
+		type: DataTypes.DATE,
+		defaultValue: DataTypes.NOW,
 	},
 });
 

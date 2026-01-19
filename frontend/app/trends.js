@@ -1,29 +1,33 @@
 import { View, Text, StyleSheet, Dimensions, ScrollView, RefreshControl } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { useQuery } from "@tanstack/react-query";
-// FIXED: Importing the named export directly to resolve the ESLint caution
-import api, { fetchWithAuth } from "../src/api/api"; 
+import api from "../src/api/api"; 
 import { useMemo, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
+import { useReadingsStore } from "../src/stores";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
 const fetchReadings = async () => {
-  // FIXED: Using the direct reference
-  const res = await fetchWithAuth("/readings/my");
+  
+  const res = await api.fetchWithAuth("/readings/my");
   if (!res.res.ok) throw new Error("Failed to fetch readings");
   return res.data;
 };
 
 export default function Trends() {
   const [refreshing, setRefreshing] = useState(false);
+  
+  const { readings: storedReadings, setReadings } = useReadingsStore();
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["readings"],
     queryFn: fetchReadings,
     staleTime: 5 * 60 * 1000,
   });
+
+  const readings = data || storedReadings;
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -32,9 +36,9 @@ export default function Trends() {
   };
 
   const chartData = useMemo(() => {
-    if (!data?.length) return null;
+    if (!readings?.length) return null;
 
-    const sortedData = [...data]
+    const sortedData = [...readings]
       .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
       .slice(-30);
 
@@ -53,7 +57,7 @@ export default function Trends() {
           color: () => "#E11D48",
           label: "Systolic",
         },
-        ...(data[0]?.diastolic
+        ...(sortedData[0]?.diastolic
           ? [
               {
                 data: sortedData.map((r) => r.diastolic),
@@ -64,13 +68,13 @@ export default function Trends() {
           : []),
       ],
     };
-  }, [data]);
+  }, [readings]);
 
   const chartHeight = Math.max(220, screenHeight * 0.35);
 
   const weeklyStats = useMemo(() => {
-    if (!data?.length) return null;
-    const last7 = [...data]
+    if (!readings?.length) return null;
+    const last7 = [...readings]
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
       .slice(0, 7);
 
@@ -83,7 +87,7 @@ export default function Trends() {
       avgDiastolic: Math.round(avgDiastolic),
       avgPulse: Math.round(avgPulse),
     };
-  }, [data]);
+  }, [readings]);
 
   if (isLoading && !data) {
     return (

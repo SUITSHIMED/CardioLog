@@ -1,10 +1,9 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import authService from "../src/services/authService";
+import { useAuthStore, useReadingsStore } from "../src/stores";
 import api from "../src/api/api";
-
-/* ------------------ Helpers ------------------ */
 
 const getStatus = (sys, dia) => {
   if (sys < 120 && dia < 80) return { label: "Normal", color: "#10B981" };
@@ -12,34 +11,28 @@ const getStatus = (sys, dia) => {
   return { label: "High", color: "#EF4444" };
 };
 
-const fetchMe = async () => {
-  const token = await authService.getToken();
-  if (!token) throw new Error("NO_TOKEN");
-  return authService.me();
-};
-
+// Fetch stats from API
 const fetchStats = async () => {
-  const res = await api.fetchWithAuth("/readings/stats");
-  if (!res.res.ok) throw new Error("STATS_ERROR");
-  return res.data;
+  try {
+    const res = await api.fetchWithAuth("/readings/stats");
+    if (!res.res.ok) throw new Error("STATS_ERROR");
+    return res.data;
+  } catch (error) {
+    console.error("Stats error:", error);
+    throw error;
+  }
 };
-
-/* ------------------ Screen ------------------ */
 
 export default function Dashboard() {
   const router = useRouter();
+  
+  // Get user from Zustand auth store
+  const { user, logout } = useAuthStore();
+  
+  // Get setStats from Zustand readings store
+  const { setStats } = useReadingsStore();
 
-  /* 👤 User Query */
-  const {
-    data: user,
-    isLoading: userLoading,
-    error: userError,
-  } = useQuery({
-    queryKey: ["me"],
-    queryFn: fetchMe,
-  });
-
-  /* 📊 Stats Query (depends on user) */
+  // Only fetch stats if user exists
   const {
     data: stats,
     isLoading: statsLoading,
@@ -47,11 +40,26 @@ export default function Dashboard() {
   } = useQuery({
     queryKey: ["stats"],
     queryFn: fetchStats,
-    enabled: !!user, // ⬅️ wait until user exists
+    enabled: !!user, 
   });
 
-  /* ⏳ Loading state */
-  if (userLoading || statsLoading) {
+  // Handle errors - logout and redirect to login
+  useEffect(() => {
+    if (statsError) {
+      logout();
+      router.replace("/login");
+    }
+  }, [statsError, router, logout]);
+
+  // Save stats to Zustand store when they load
+  useEffect(() => {
+    if (stats) {
+      setStats(stats);
+    }
+  }, [stats, setStats]);
+
+  // Show loading state
+  if (!user || statsLoading) {
     return (
       <View style={styles.center}>
         <Text>Loading dashboard...</Text>
@@ -59,10 +67,8 @@ export default function Dashboard() {
     );
   }
 
-  /* ❌ Error / Auth failure */
-  if (userError || statsError) {
-    authService.logout();
-    router.replace("/login");
+  // Show error state
+  if (statsError) {
     return null;
   }
 
@@ -71,11 +77,9 @@ export default function Dashboard() {
     stats.latest.diastolic
   );
 
-  /* ------------------ UI ------------------ */
-
   return (
     <View style={styles.container}>
-      {/* Header */}
+  
       <View style={styles.headerSection}>
         <Text style={styles.welcome}>
           Hello, {user.email.split("@")[0]}
@@ -85,7 +89,7 @@ export default function Dashboard() {
         </Text>
       </View>
 
-      {/* Stats Card */}
+  
       <View style={styles.statsCard}>
         <View style={styles.statsHeader}>
           <Text style={styles.statTitle}>Latest Reading</Text>
@@ -130,7 +134,6 @@ export default function Dashboard() {
         </View>
       </View>
 
-      {/* Actions */}
       <View style={styles.menuSection}>
         <TouchableOpacity
           style={styles.primaryButton}
@@ -139,7 +142,6 @@ export default function Dashboard() {
           <Text style={styles.primaryButtonText}>+ New Reading</Text>
         </TouchableOpacity>
 
-        {/* First Row - History & Trends */}
         <View style={styles.row}>
           <TouchableOpacity
             style={styles.secondaryButton}
@@ -156,7 +158,6 @@ export default function Dashboard() {
           </TouchableOpacity>
         </View>
 
-        {/* Second Row - Profile */}
         <TouchableOpacity
           style={styles.fullWidthButton}
           onPress={() => router.push("/profile")}
@@ -173,7 +174,7 @@ export default function Dashboard() {
         <TouchableOpacity
           style={styles.logout}
           onPress={async () => {
-            await authService.logout();
+            await logout();
             router.replace("/login");
           }}
         >
@@ -192,7 +193,6 @@ const styles = StyleSheet.create({
   welcome: { fontSize: 28, fontWeight: "800", color: "#1E293B" },
   subtitle: { fontSize: 16, color: "#64748B", marginTop: 4 },
   
-  // Stats Card
   statsCard: { backgroundColor: "#1E293B", borderRadius: 28, padding: 24, elevation: 8 },
   statsHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   statTitle: { color: "#94A3B8", fontWeight: "600", textTransform: 'uppercase', letterSpacing: 1, fontSize: 12 },
@@ -208,12 +208,25 @@ const styles = StyleSheet.create({
   gridValue: { color: "#FFFFFF", fontSize: 18, fontWeight: "700" },
   gridUnit: { fontSize: 12, fontWeight: '400' },
 
-  // Buttons
   menuSection: { marginTop: 20, marginBottom: 30 },
-  primaryButton: { backgroundColor: "#E11D48", padding: 18, borderRadius: 18, alignItems: "center", marginBottom: 12 },
-  primaryButtonText: { color: "#fff", fontSize: 16, fontWeight: "700" },
-  row: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 },
-  secondaryButton: { backgroundColor: "#fff", padding: 14, borderRadius: 12, alignItems: "center", borderWidth: 1, borderColor: "#E2E8F0", width: '48%' },
+  primaryButton: { backgroundColor: "#E11D48",
+     padding: 18,
+      borderRadius: 18,
+       alignItems: "center",
+        marginBottom: 12 },
+  primaryButtonText: { color: "#fff", 
+    fontSize: 16,
+     fontWeight: "700" },
+  row: { flexDirection: 'row',
+     justifyContent: 'space-between',
+      marginBottom: 12 },
+  secondaryButton: { backgroundColor: "#fff",
+     padding: 14,
+      borderRadius: 12,
+       alignItems: "center",
+        borderWidth: 1,
+         borderColor: "#E2E8F0",
+          width: '48%' },
   fullWidthButton: { backgroundColor: "#fff", padding: 14, borderRadius: 12, alignItems: "center", borderWidth: 1, borderColor: "#E2E8F0", width: '100%', marginBottom: 12 },
   secondaryButtonText: { color: "#1E293B", fontSize: 15, fontWeight: "700" },
   logout: { marginTop: 6, alignItems: 'center' },
