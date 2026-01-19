@@ -1,20 +1,29 @@
+import axios from "axios";
 import tokenStorage from "../storage/token";
 
-const BASE_URL = "http://192.168.40.180:3000/api";
+const BASE_URL = __DEV__
+	? "http://192.168.1.136:3000/api" 
+	: "https://cardiolog-production.up.railway.app/api";
+
+const axiosInstance = axios.create({
+	baseURL: BASE_URL,
+});
+
+
+axiosInstance.interceptors.request.use(async (config) => {
+	const token = await tokenStorage.getToken();
+	if (token) {
+		config.headers.Authorization = `Bearer ${token}`;
+	}
+	return config;
+});
 
 const authService = {
 	login: async (email, password) => {
-		const res = await fetch(`${BASE_URL}/auth/login`, {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ email, password }),
+		const { data } = await axiosInstance.post("/auth/login", {
+			email,
+			password,
 		});
-
-		const data = await res.json();
-
-		if (!res.ok) {
-			throw new Error(data.message || "Login failed");
-		}
 
 		if (data.token) {
 			await tokenStorage.setToken(data.token);
@@ -37,13 +46,7 @@ const authService = {
 		const token = await tokenStorage.getToken();
 		if (!token) throw new Error("No token available");
 
-		const res = await fetch(`${BASE_URL}/auth/me`, {
-			method: "GET",
-			headers: { Authorization: `Bearer ${token}` },
-		});
-
-		const data = await res.json();
-		if (!res.ok) throw new Error(data.message || "Failed to fetch user");
+		const { data } = await axiosInstance.get("/auth/me");
 		return data;
 	},
 };

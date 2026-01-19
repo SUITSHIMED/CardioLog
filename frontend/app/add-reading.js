@@ -1,34 +1,45 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { useState } from "react";
 import api from "../src/api/api";
-import { colors } from "../src/theme/colors";
 import { useRouter } from "expo-router";
+import { useReadingsStore } from "../src/stores";
 
 export default function AddReading() {
 	const [systolic, setSystolic] = useState("");
 	const [diastolic, setDiastolic] = useState("");
 	const [pulse, setPulse] = useState("");
+	const [loading, setLoading] = useState(false);
 	const router = useRouter();
+	
+	// Get addReading method from Zustand readings store
+	const { addReading } = useReadingsStore();
 
 	const save = async () => {
+		setLoading(true);
 		try {
+			// Use axios-based fetchWithAuth to send reading
 			const { res, data } = await api.fetchWithAuth("/readings", {
 				method: "POST",
-				body: JSON.stringify({
+				data: {
 					systolic: Number(systolic),
 					diastolic: Number(diastolic),
 					pulse: Number(pulse),
-				}),
+				},
 			});
 
 			if (!res.ok) {
 				throw new Error(data?.message || "Failed to save reading");
 			}
 
+			// Update Zustand store with new reading
+			addReading(data);
+			
 			Alert.alert("Success", "Reading saved");
-			router.back(); // go back to dashboard
+			router.back(); 
 		} catch (err) {
 			Alert.alert("Error", err.message);
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -55,8 +66,8 @@ export default function AddReading() {
                     <TextInput style={styles.input} placeholder="72" keyboardType="numeric" onChangeText={setPulse} />
                 </View>
 
-                <TouchableOpacity style={styles.button} onPress={save}>
-                    <Text style={styles.buttonText}>Save Reading</Text>
+                <TouchableOpacity style={styles.button} onPress={save} disabled={loading}>
+                    <Text style={styles.buttonText}>{loading ? "Saving..." : "Save Reading"}</Text>
                 </TouchableOpacity>
             </View>
 		</View>

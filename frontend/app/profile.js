@@ -4,8 +4,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
 import api from "../src/api/api";
+import { useAuthStore } from "../src/stores";
 
-// API Functions
 const fetchUserProfile = async () => {
   const res = await api.fetchWithAuth("/auth/me");
   if (!res.res.ok) {
@@ -15,9 +15,10 @@ const fetchUserProfile = async () => {
 };
 
 const updateUserProfile = async (newData) => {
+  // Use axios PUT method instead of fetch body format
   const res = await api.fetchWithAuth("/auth/me", {
     method: "PUT",
-    body: JSON.stringify(newData),
+    data: newData,
   });
   if (!res.res.ok) {
     throw new Error(res.data?.message || "Failed to update profile");
@@ -27,8 +28,10 @@ const updateUserProfile = async (newData) => {
 
 export default function MedicalProfile() {
   const queryClient = useQueryClient();
+  
+  // Get setUser from Zustand auth store to update user after profile changes
+  const { setUser } = useAuthStore();
 
-  // State for form inputs
   const [formData, setFormData] = useState({
     name: "",
     age: "",
@@ -37,13 +40,11 @@ export default function MedicalProfile() {
     bloodType: "",
   });
 
-  // Fetch user profile
   const { data: profile, isLoading, error } = useQuery({
     queryKey: ["profile"],
     queryFn: fetchUserProfile,
   });
 
-  // Update profile with form data when profile is fetched
   useEffect(() => {
     if (profile) {
       setFormData({
@@ -56,10 +57,11 @@ export default function MedicalProfile() {
     }
   }, [profile]);
 
-  // Mutation for updating profile
   const mutation = useMutation({
     mutationFn: updateUserProfile,
-    onSuccess: () => {
+    onSuccess: (updatedProfile) => {
+      // Update Zustand store with new user data
+      setUser(updatedProfile);
       queryClient.invalidateQueries({ queryKey: ["profile"] });
       Alert.alert("Success", "Profile updated successfully!");
     },
@@ -68,7 +70,6 @@ export default function MedicalProfile() {
     },
   });
 
-  // Handle input changes
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -76,7 +77,6 @@ export default function MedicalProfile() {
     }));
   };
 
-  // Handle save
   const handleSave = () => {
     const dataToSend = {
       name: formData.name,
@@ -89,7 +89,6 @@ export default function MedicalProfile() {
     mutation.mutate(dataToSend);
   };
 
-  // Loading state
   if (isLoading) {
     return (
       <SafeAreaView style={styles.safe}>
@@ -100,7 +99,6 @@ export default function MedicalProfile() {
     );
   }
 
-  // Error state
   if (error) {
     return (
       <SafeAreaView style={styles.safe}>
@@ -126,7 +124,6 @@ export default function MedicalProfile() {
           entering={FadeInUp.delay(200).duration(600)}
           style={styles.card}
         >
-          {/* Name Field */}
           <Animated.View
             entering={FadeInDown.duration(400)}
             style={styles.inputGroup}
@@ -140,7 +137,6 @@ export default function MedicalProfile() {
             />
           </Animated.View>
 
-          {/* Age Field */}
           <Animated.View
             entering={FadeInDown.delay(50).duration(400)}
             style={styles.inputGroup}
@@ -155,7 +151,6 @@ export default function MedicalProfile() {
             />
           </Animated.View>
 
-          {/* Weight Field */}
           <Animated.View
             entering={FadeInDown.delay(100).duration(400)}
             style={styles.inputGroup}
@@ -170,7 +165,6 @@ export default function MedicalProfile() {
             />
           </Animated.View>
 
-          {/* Height Field */}
           <Animated.View
             entering={FadeInDown.delay(150).duration(400)}
             style={styles.inputGroup}
@@ -185,7 +179,6 @@ export default function MedicalProfile() {
             />
           </Animated.View>
 
-          {/* Blood Type Field */}
           <Animated.View
             entering={FadeInDown.delay(200).duration(400)}
             style={styles.inputGroup}
@@ -199,7 +192,6 @@ export default function MedicalProfile() {
             />
           </Animated.View>
 
-          {/* Save Button */}
           <Animated.View
             entering={FadeInUp.delay(400).duration(600)}
             style={styles.buttonContainer}
