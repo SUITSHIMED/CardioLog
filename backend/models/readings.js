@@ -4,7 +4,7 @@ import sequelize from "../config/database.js";
 const Reading = sequelize.define("Reading", {
 	id: {
 		type: DataTypes.UUID,
-		autoIncrement: true,
+        defaultValue: DataTypes.UUIDV4,
 		primaryKey: true,
 	},
 	systolic: {

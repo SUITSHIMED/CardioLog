@@ -7,29 +7,18 @@ import api from "../src/api/api";
 import { useAuthStore } from "../src/stores";
 
 const fetchUserProfile = async () => {
-  const res = await api.fetchWithAuth("/auth/me");
-  if (!res.res.ok) {
-    throw new Error(res.data?.message || "Failed to fetch user profile");
-  }
-  return res.data;
+  const { data } = await api.get("/auth/me");
+  return data;
 };
 
 const updateUserProfile = async (newData) => {
-  // Use axios PUT method instead of fetch body format
-  const res = await api.fetchWithAuth("/auth/me", {
-    method: "PUT",
-    data: newData,
-  });
-  if (!res.res.ok) {
-    throw new Error(res.data?.message || "Failed to update profile");
-  }
-  return res.data;
+  const { data } = await api.put("/auth/me", newData);
+  return data;
 };
 
 export default function MedicalProfile() {
   const queryClient = useQueryClient();
   
-  // Get setUser from Zustand auth store to update user after profile changes
   const { setUser } = useAuthStore();
 
   const [formData, setFormData] = useState({
@@ -60,7 +49,6 @@ export default function MedicalProfile() {
   const mutation = useMutation({
     mutationFn: updateUserProfile,
     onSuccess: (updatedProfile) => {
-      // Update Zustand store with new user data
       setUser(updatedProfile);
       queryClient.invalidateQueries({ queryKey: ["profile"] });
       Alert.alert("Success", "Profile updated successfully!");

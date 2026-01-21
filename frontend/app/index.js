@@ -11,12 +11,10 @@ const getStatus = (sys, dia) => {
   return { label: "High", color: "#EF4444" };
 };
 
-// Fetch stats from API
 const fetchStats = async () => {
   try {
-    const res = await api.fetchWithAuth("/readings/stats");
-    if (!res.res.ok) throw new Error("STATS_ERROR");
-    return res.data;
+    const { data } = await api.get("/readings/stats");
+    return data;
   } catch (error) {
     console.error("Stats error:", error);
     throw error;
@@ -26,13 +24,10 @@ const fetchStats = async () => {
 export default function Dashboard() {
   const router = useRouter();
   
-  // Get user from Zustand auth store
   const { user, logout } = useAuthStore();
   
-  // Get setStats from Zustand readings store
   const { setStats } = useReadingsStore();
 
-  // Only fetch stats if user exists
   const {
     data: stats,
     isLoading: statsLoading,
@@ -43,7 +38,6 @@ export default function Dashboard() {
     enabled: !!user, 
   });
 
-  // Handle errors - logout and redirect to login
   useEffect(() => {
     if (statsError) {
       logout();
@@ -51,14 +45,12 @@ export default function Dashboard() {
     }
   }, [statsError, router, logout]);
 
-  // Save stats to Zustand store when they load
   useEffect(() => {
     if (stats) {
       setStats(stats);
     }
   }, [stats, setStats]);
 
-  // Show loading state
   if (!user || statsLoading) {
     return (
       <View style={styles.center}>
@@ -67,7 +59,6 @@ export default function Dashboard() {
     );
   }
 
-  // Show error state
   if (statsError) {
     return null;
   }
