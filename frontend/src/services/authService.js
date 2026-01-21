@@ -2,7 +2,7 @@ import axios from "axios";
 import tokenStorage from "../storage/token";
 
 const BASE_URL = __DEV__
-	? "http://192.168.1.136:3000/api" 
+	? "http://192.168.40.48:3000/api" 
 	: "https://cardiolog-production.up.railway.app/api";
 
 const axiosInstance = axios.create({
