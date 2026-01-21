@@ -15,7 +15,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
 
   const register = async () => {
-    // Validation
+    
     if (!name.trim() || !email.trim() || !password.trim()) {
       Alert.alert("Error", "Please fill all fields");
       return;
@@ -29,14 +29,13 @@ export default function Register() {
     setLoading(true);
     
     try {
-      // Use axios instead of fetch - automatically serializes JSON
+
       const { data } = await axios.post(`${BASE_URL}/auth/register`, {
         email: email.trim(), 
         password: password.trim(), 
         name: name.trim() 
       });
       
-      // Success response
       Alert.alert("Success", "Account created successfully!");
       router.replace("/login");
     } catch (err) {
@@ -149,7 +148,7 @@ const styles = StyleSheet.create({
     borderColor: "#E2E8F0"
   },
   button: { 
-    backgroundColor: "#E11D48", // Vibrant Pulse Red
+    backgroundColor: "#E11D48", 
     padding: 18, 
     borderRadius: 12, 
     alignItems: "center",

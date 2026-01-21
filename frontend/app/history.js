@@ -6,20 +6,12 @@ import { useReadingsStore } from "../src/stores";
 export default function History() {
 	const [loading, setLoading] = useState(true);
 	
-	// Get readings and setReadings from Zustand store
 	const { readings, setReadings } = useReadingsStore();
 
 	useEffect(() => {
 		const loadReadings = async () => {
 			try {
-				// Fetch readings from API using axios-based fetchWithAuth
-				const { res, data } = await api.fetchWithAuth("/readings/my");
-
-				if (!res.ok) {
-					throw new Error("Failed to load readings");
-				}
-
-				// Save readings to Zustand store
+				const { data } = await api.get("/readings/my");
 				setReadings(data);
 			} catch (err) {
 				console.log("HISTORY ERROR:", err.message);

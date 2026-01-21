@@ -11,9 +11,8 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
 const fetchReadings = async () => {
   
-  const res = await api.fetchWithAuth("/readings/my");
-  if (!res.res.ok) throw new Error("Failed to fetch readings");
-  return res.data;
+  const { data } = await api.get("/readings/my");
+  return data;
 };
 
 export default function Trends() {

@@ -8,14 +8,12 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   
-  // Get login method from Zustand auth store
   const { login: storeLogin, isLoading } = useAuthStore();
 
   const login = async () => {
     try {
-      // Call Zustand's login method which handles auth state automatically
       await storeLogin(email, password);
-      // Redirect to dashboard after successful login
+      
       router.replace("/");
     } catch (err) {
       console.error("Login Error Details:", err);

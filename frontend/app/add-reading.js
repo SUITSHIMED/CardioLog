@@ -11,27 +11,17 @@ export default function AddReading() {
 	const [loading, setLoading] = useState(false);
 	const router = useRouter();
 	
-	// Get addReading method from Zustand readings store
 	const { addReading } = useReadingsStore();
 
 	const save = async () => {
 		setLoading(true);
 		try {
-			// Use axios-based fetchWithAuth to send reading
-			const { res, data } = await api.fetchWithAuth("/readings", {
-				method: "POST",
-				data: {
-					systolic: Number(systolic),
-					diastolic: Number(diastolic),
-					pulse: Number(pulse),
-				},
+			const { data } = await api.post("/readings", {
+				systolic: Number(systolic),
+				diastolic: Number(diastolic),
+				pulse: Number(pulse),
 			});
 
-			if (!res.ok) {
-				throw new Error(data?.message || "Failed to save reading");
-			}
-
-			// Update Zustand store with new reading
 			addReading(data);
 			
 			Alert.alert("Success", "Reading saved");

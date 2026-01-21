@@ -11,7 +11,7 @@ export default function SettingsExport() {
   const [unit, setUnit] = useState("mmHg");
   const [exportFormat, setExportFormat] = useState("csv");
 
-  /* ---------------- LOAD SETTINGS ---------------- */
+ 
   useEffect(() => {
     AsyncStorage.getItem(SETTINGS_KEY).then((stored) => {
       if (stored) {
@@ -22,7 +22,6 @@ export default function SettingsExport() {
     });
   }, []);
 
-  /* ---------------- SAVE SETTINGS ---------------- */
   useEffect(() => {
     AsyncStorage.setItem(
       SETTINGS_KEY,
@@ -30,17 +29,14 @@ export default function SettingsExport() {
     );
   }, [unit, exportFormat]);
 
-  /* ---------------- FETCH READINGS ---------------- */
   const { data: readings } = useQuery({
     queryKey: ["readings"],
     queryFn: async () => {
-      const res = await api.fetchWithAuth("/readings/my");
-      if (!res.res.ok) throw new Error("Failed to load readings");
-      return res.data;
+      const { data } = await api.get("/readings/my");
+      return data;
     },
   });
 
-  /* ---------------- EXPORT CSV ---------------- */
   const exportCSV = () => {
     if (!readings?.length) {
       Alert.alert("No data", "No readings to export");
@@ -62,7 +58,7 @@ export default function SettingsExport() {
 
     const csv = header + rows;
 
-    console.log(csv); // TEMP: later we save/share
+    console.log(csv); 
     Alert.alert("Export ready", "CSV generated (check console)");
   };
 
@@ -71,7 +67,6 @@ export default function SettingsExport() {
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Settings & Export</Text>
 
-        {/* -------- SETTINGS -------- */}
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>Preferences</Text>
 
@@ -92,7 +87,7 @@ export default function SettingsExport() {
           </View>
         </View>
 
-        {/* -------- EXPORT -------- */}
+       
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>Export Data</Text>
 
@@ -103,7 +98,7 @@ export default function SettingsExport() {
           />
         </View>
 
-        {/* -------- INFO -------- */}
+       
         <Text style={styles.note}>
           Your data stays on your device. Exporting generates a local report only.
         </Text>
