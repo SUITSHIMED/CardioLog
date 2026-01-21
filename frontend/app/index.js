@@ -63,10 +63,9 @@ export default function Dashboard() {
     return null;
   }
 
-  const status = getStatus(
-    stats.latest.systolic,
-    stats.latest.diastolic
-  );
+  const status = stats?.latest
+    ? getStatus(stats.latest.systolic, stats.latest.diastolic)
+    : { label: "No Data", color: "#94A3B8" };
 
   return (
     <View style={styles.container}>
@@ -96,14 +95,22 @@ export default function Dashboard() {
           </View>
         </View>
 
-        <Text style={styles.statValue}>
-          {stats.latest.systolic}
-          <Text style={styles.unit}>/{stats.latest.diastolic}</Text>
-        </Text>
+        {stats?.latest ? (
+          <>
+            <Text style={styles.statValue}>
+              {stats.latest.systolic}
+              <Text style={styles.unit}>/{stats.latest.diastolic}</Text>
+            </Text>
 
-        <Text style={styles.statSub}>
-          ❤️ {stats.latest.pulse} BPM
-        </Text>
+            <Text style={styles.statSub}>
+              ❤️ {stats.latest.pulse} BPM
+            </Text>
+          </>
+        ) : (
+          <Text style={[styles.statValue, { color: "#94A3B8" }]}>
+            No readings yet
+          </Text>
+        )}
 
         <View style={styles.divider} />
 
@@ -111,15 +118,16 @@ export default function Dashboard() {
           <View style={styles.gridItem}>
             <Text style={styles.gridLabel}>Average BP</Text>
             <Text style={styles.gridValue}>
-              {Math.round(stats.stats.avgSystolic)}/
-              {Math.round(stats.stats.avgDiastolic)}
+              {stats?.stats
+                ? `${Math.round(stats.stats.avgSystolic)}/${Math.round(stats.stats.avgDiastolic)}`
+                : "—"}
             </Text>
           </View>
 
           <View style={styles.gridItem}>
             <Text style={styles.gridLabel}>Avg. Pulse</Text>
             <Text style={styles.gridValue}>
-              {Math.round(stats.stats.avgPulse)} bpm
+              {stats?.stats ? `${Math.round(stats.stats.avgPulse)} bpm` : "—"}
             </Text>
           </View>
         </View>
