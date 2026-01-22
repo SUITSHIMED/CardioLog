@@ -250,7 +250,6 @@ const styles = StyleSheet.create({
   legendText: { fontSize: 12, color: "#64748B" },
   lastUpdated: { fontSize: 12, color: "#94A3B8", textAlign: "center", marginBottom: 20 },
   
-  // REMOVED: Duplicate summaryValue was inside the old summaryCard block
   summaryCard: {
     backgroundColor: "#bebec0",
     padding: 20,
@@ -277,7 +276,7 @@ const styles = StyleSheet.create({
   },
   cardAccent: {
     width: 6,
-    backgroundColor: "#E11D48",
+    backgroundColor: "#0dbb78c4",
   },
   cardContent: {
     flex: 1,
@@ -319,7 +318,6 @@ const styles = StyleSheet.create({
     color: "#94A3B8",
     marginBottom: 4,
   },
-  // KEPT: This is the version of summaryValue you are actually using
   summaryValue: {
     fontSize: 24,
     fontWeight: "800",

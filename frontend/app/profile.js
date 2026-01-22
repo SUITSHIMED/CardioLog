@@ -188,7 +188,7 @@ export default function MedicalProfile() {
               title={mutation.isPending ? "Saving..." : "Save Changes"}
               onPress={handleSave}
               disabled={mutation.isPending}
-              color="#E11D48"
+              color="#0dbb78c4"
             />
           </Animated.View>
         </Animated.View>
