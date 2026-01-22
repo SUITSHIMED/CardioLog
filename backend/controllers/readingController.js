@@ -56,3 +56,33 @@ export const getReadingStats = async (req, res) => {
     res.status(500).json({ message: "Failed to load stats" });
   }
 };
+export const deleteReading = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const reading = await Reading.findOne({
+      where: {
+        id,
+        userId: req.user.id, // 🔒 important: user can delete ONLY their own reading
+      },
+    });
+
+    if (!reading) {
+      return res.status(404).json({
+        message: "Reading not found",
+      });
+    }
+
+    await reading.destroy();
+
+    res.status(200).json({
+      message: "Reading deleted successfully",
+      id,
+    });
+  } catch (error) {
+    console.error("Delete reading error:", error);
+    res.status(500).json({
+      message: "Failed to delete reading",
+    });
+  }
+};

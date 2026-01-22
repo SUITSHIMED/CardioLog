@@ -148,12 +148,12 @@ const styles = StyleSheet.create({
     borderColor: "#E2E8F0"
   },
   button: { 
-    backgroundColor: "#E11D48", 
+    backgroundColor: "#0dbb78c4", 
     padding: 18, 
     borderRadius: 12, 
     alignItems: "center",
     marginTop: 12,
-    shadowColor: "#E11D48",
+    shadowColor: "#0dbb78c4",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
