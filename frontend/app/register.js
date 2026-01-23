@@ -100,7 +100,7 @@ export default function Register() {
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    backgroundColor: "#F8FAFC", // Cleaner light gray/blue
+    backgroundColor: "#F8FAFC", 
     justifyContent: "center", 
     padding: 24 
   },
@@ -159,6 +159,11 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4
   },
-  buttonText: { color: "#fff", fontSize: 16, fontWeight: "700" },
-  linkText: { color: "#64748B", marginTop: 24, textAlign: "center", fontSize: 15 }
+  buttonText: { color: "#fff",
+     fontSize: 16, 
+     fontWeight: "700" },
+  linkText: { color: "#64748B",
+     marginTop: 24,
+      textAlign: "center",
+       fontSize: 15 }
 });

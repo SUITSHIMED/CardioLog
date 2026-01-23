@@ -6,19 +6,21 @@ import {
   ActivityIndicator,
   RefreshControl,
   Alert,
+  TouchableOpacity,
 } from "react-native";
 import { useEffect, useState } from "react";
 import { Swipeable } from "react-native-gesture-handler";
 import api from "../src/api/api";
 import { useReadingsStore } from "../src/stores";
 import { getBPStatus } from "../src/utils/healthLogic";
+import { useRouter } from "expo-router";
 
 export default function History() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const { readings, setReadings } = useReadingsStore();
+  const router = useRouter();
 
-  // Load readings
   const loadReadings = async () => {
     try {
       const { data } = await api.get("/readings/my");
@@ -35,7 +37,6 @@ export default function History() {
     loadReadings();
   }, []);
 
-  // Delete reading with confirmation
   const deleteReading = async (id) => {
     Alert.alert(
       "Delete Reading",
@@ -58,7 +59,7 @@ export default function History() {
     );
   };
 
-  // Swipe delete UI
+
   const renderRightActions = (item) => (
     <View style={styles.deleteBox}>
       <Text
@@ -70,7 +71,6 @@ export default function History() {
     </View>
   );
 
-  // Render each item
   const renderItem = ({ item }) => {
     const status = getBPStatus(item.systolic, item.diastolic);
     const dateObj = new Date(item.createdAt);
@@ -123,7 +123,7 @@ export default function History() {
       <ActivityIndicator
         style={styles.center}
         size="large"
-        color="#E11D48"
+        color="#0dbb78c4"
       />
     );
   }
@@ -131,7 +131,6 @@ export default function History() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>History Log</Text>
-
       <FlatList
         data={readings}
         keyExtractor={(item) => item.id.toString()}
@@ -152,6 +151,9 @@ export default function History() {
           </Text>
         }
       />
+      <TouchableOpacity onPress={() =>router.replace("/")}>
+              <Text style={styles.linkText}>Dashboard</Text>
+            </TouchableOpacity>
     </View>
   );
 }
@@ -253,5 +255,11 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "800",
     fontSize: 14,
+  },
+  linkText: {
+    color: "#64748B",
+    textAlign: "center",    
+    fontSize: 15,
+    marginTop: 20
   },
 });
