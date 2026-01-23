@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions, ScrollView, RefreshControl } from "react-native";
+import { View, Text, StyleSheet, Dimensions, ScrollView, RefreshControl, TouchableOpacity } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { useQuery } from "@tanstack/react-query";
 import api from "../src/api/api"; 
@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
 import { useReadingsStore } from "../src/stores";
+import { router } from "expo-router";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
@@ -206,6 +207,9 @@ export default function Trends() {
           </Animated.View>
         )}
       </ScrollView>
+      <TouchableOpacity onPress={() =>router.replace("/")}>
+        <Text style={styles.linkText}>Dashboard</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -341,5 +345,11 @@ const styles = StyleSheet.create({
     height: 30,
     backgroundColor: "#E2E8F0",
     marginHorizontal: 15,
+  },
+  linkText: {
+    color: "#64748B",
+    textAlign: "center",  
+    fontSize: 15,
+    marginBottom: 20
   },
 });

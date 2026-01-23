@@ -3,7 +3,7 @@ import tokenStorage from "../storage/token";
 import { useAuthStore } from "../stores"; 
 
 const BASE_URL = __DEV__
-    ? "http://192.168.40.48:3000/api" 
+    ? "http://192.168.1.136:3000/api" 
     : "https://cardiolog-production.up.railway.app/api";
 
 const api = axios.create({
@@ -22,13 +22,10 @@ api.interceptors.request.use(async (config) => {
 api.interceptors.response.use(
     (response) => response,
     async (error) => {
-        // GLOBAL LOGOUT ON 401 (Unauthorized)
         if (error.response?.status === 401) {
             console.warn("Session expired. Logging out...");
-            const { logout } = useAuthStore.getState(); // Access state outside of React
+            const { logout } = useAuthStore.getState(); 
             await logout();
-            // Note: Your navigation (expo-router) will automatically 
-            // redirect to /login if your root layout checks for the user state.
         }
 
         console.error("API Error:", {
