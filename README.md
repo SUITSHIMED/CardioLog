@@ -86,12 +86,14 @@ Reading {
   note: string
   createdAt: Date
 }
-## Class Diagram
-<img width="2316" height="1323" alt="mermaid-diagram-2026-01-23-093718" src="https://github.com/user-attachments/assets/51511a41-c32c-4295-b72b-8701060e644b" />
+## 🏗️ Architecture Diagrams
 
-## Use Case
+### Class Diagram
+![CardioLog Class Diagram](https://ik.imagekit.io/huntermed/mermaid-diagram-2026-01-23-093718.png)
 
-<img width="1920" height="1080" alt="useCaseDiagram_    actor User__    rectangle C" src="https://github.com/user-attachments/assets/8b515df0-adc6-4053-9bcc-ed38361bfe93" />
+### Use Case Diagram
+![CardioLog Use Case Diagram](https://ik.imagekit.io/huntermed/useCaseDiagram_%20%20%20%20actor%20User__%20%20%20%20rectangle%20C.png)
+
 
 ##. How to Run Locally
 
