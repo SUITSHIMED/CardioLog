@@ -3,7 +3,7 @@ import tokenStorage from "../storage/token";
 import { useAuthStore } from "../stores"; 
 
 const BASE_URL = __DEV__
-    ? "http://192.168.1.136:3000/api" 
+    ? "http://192.168.1.104:3000/api" 
     : "https://cardiolog-production.up.railway.app/api";
 
 const api = axios.create({
