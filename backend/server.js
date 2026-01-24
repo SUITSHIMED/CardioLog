@@ -6,12 +6,16 @@ import { sequelize } from "./models/index.js";
 import authRoutes from "./routes/authRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
 import readingRoutes from "./routes/readingRoutes.js";
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./src/docs/swagger.js";
 
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+const swaggerDocs = swaggerUi.setup(swaggerSpec);
+app.use("/api/docs", swaggerUi.serve, swaggerDocs);
 app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
