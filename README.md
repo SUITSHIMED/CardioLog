@@ -88,30 +88,34 @@ Reading {
 }
 
 ---
+```
 
-## 🏗️ Architecture Diagrams
+### 🏗️ Architecture Diagrams
 
 ### Class Diagram
-![CardioLog Class Diagram](https://ik.imagekit.io/huntermed/mermaid-diagram-2026-01-23-093718.png)
+<img width="2316" height="1323" alt="mermaid-diagram-2026-01-23-093718" src="https://github.com/user-attachments/assets/6a5160c9-def7-4506-8532-7064d5efaafb" />
+```
+```
 
 ### Use Case Diagram
-![CardioLog Use Case Diagram](https://ik.imagekit.io/huntermed/useCaseDiagram_%20%20%20%20actor%20User__%20%20%20%20rectangle%20C.png)
+<img width="1920" height="1080" alt="useCaseDiagram_    actor User__    rectangle C" src="https://github.com/user-attachments/assets/acb6bf34-7d2b-4238-bae7-c7e0133f7995" />
+```
 
 ---
 ---
-
+```
 ## 🚀 How to Run Locally
 
 ### Backend
-```bash
+```
+```
 cd backend
 npm install
 # Set up .env with DATABASE_URL and JWT_SECRET
 npm run dev
 ```
-
+```
 ### Frontend
-```bash
 cd frontend
 npm install
 # Update api.js with your local IP or production URL
