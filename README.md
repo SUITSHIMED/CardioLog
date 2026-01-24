@@ -86,6 +86,9 @@ Reading {
   note: string
   createdAt: Date
 }
+
+---
+
 ## 🏗️ Architecture Diagrams
 
 ### Class Diagram
@@ -94,8 +97,10 @@ Reading {
 ### Use Case Diagram
 ![CardioLog Use Case Diagram](https://ik.imagekit.io/huntermed/useCaseDiagram_%20%20%20%20actor%20User__%20%20%20%20rectangle%20C.png)
 
+---
+---
 
-##. How to Run Locally
+## 🚀 How to Run Locally
 
 ### Backend
 ```bash
@@ -103,9 +108,13 @@ cd backend
 npm install
 # Set up .env with DATABASE_URL and JWT_SECRET
 npm run dev
+```
+
+### Frontend
+```bash
 cd frontend
 npm install
 # Update api.js with your local IP or production URL
 npx expo start
-
+```
 
