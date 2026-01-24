@@ -14,6 +14,7 @@ Hypertension management requires **consistent, accurate logging**. CardioLog eli
 - Automatic categorization of blood pressure readings
 - Historical data visualization
 - PDF/CSV export for medical consultations
+- 
 
 ---
 
@@ -76,6 +77,8 @@ Profile {
 Reading {
   id: UUID (PK)
   userId: UUID (FK → User.id)
+
+
   systolic: integer
   diastolic: integer
   pulse: integer
@@ -83,3 +86,24 @@ Reading {
   note: string
   createdAt: Date
 }
+## Class Diagram
+<img width="2316" height="1323" alt="mermaid-diagram-2026-01-23-093718" src="https://github.com/user-attachments/assets/51511a41-c32c-4295-b72b-8701060e644b" />
+
+## Use Case
+
+<img width="1920" height="1080" alt="useCaseDiagram_    actor User__    rectangle C" src="https://github.com/user-attachments/assets/8b515df0-adc6-4053-9bcc-ed38361bfe93" />
+
+##. How to Run Locally
+
+### Backend
+```bash
+cd backend
+npm install
+# Set up .env with DATABASE_URL and JWT_SECRET
+npm run dev
+cd frontend
+npm install
+# Update api.js with your local IP or production URL
+npx expo start
+
+
