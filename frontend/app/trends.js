@@ -1,30 +1,32 @@
 import { View, Text, StyleSheet, Dimensions, ScrollView, RefreshControl, TouchableOpacity } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { useQuery } from "@tanstack/react-query";
-import api from "../src/api/api"; 
+import api from "../src/api/api";
 import { useMemo, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
-import { useReadingsStore } from "../src/stores";
+import { useAuthStore, useReadingsStore } from "../src/stores";
 import { router } from "expo-router";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
 const fetchReadings = async () => {
-  
+
   const { data } = await api.get("/readings/my");
   return data;
 };
 
 export default function Trends() {
   const [refreshing, setRefreshing] = useState(false);
-  
+
+  const { user } = useAuthStore();
   const { readings: storedReadings, setReadings } = useReadingsStore();
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["readings"],
+    queryKey: ["readings", user?.id],
     queryFn: fetchReadings,
     staleTime: 5 * 60 * 1000,
+    enabled: !!user,
   });
 
   const readings = data || storedReadings;
@@ -46,9 +48,9 @@ export default function Trends() {
       labels: sortedData.map((r, index) =>
         index % 5 === 0 || index === sortedData.length - 1
           ? new Date(r.createdAt).toLocaleDateString("en-GB", {
-              day: "2-digit",
-              month: "short",
-            })
+            day: "2-digit",
+            month: "short",
+          })
           : ""
       ),
       datasets: [
@@ -59,12 +61,12 @@ export default function Trends() {
         },
         ...(sortedData[0]?.diastolic
           ? [
-              {
-                data: sortedData.map((r) => r.diastolic),
-                color: () => "#3B82F6",
-                label: "Diastolic",
-              },
-            ]
+            {
+              data: sortedData.map((r) => r.diastolic),
+              color: () => "#3B82F6",
+              label: "Diastolic",
+            },
+          ]
           : []),
       ],
     };
@@ -207,7 +209,7 @@ export default function Trends() {
           </Animated.View>
         )}
       </ScrollView>
-      <TouchableOpacity onPress={() =>router.replace("/")}>
+      <TouchableOpacity onPress={() => router.replace("/")}>
         <Text style={styles.linkText}>Dashboard</Text>
       </TouchableOpacity>
     </SafeAreaView>
@@ -253,7 +255,7 @@ const styles = StyleSheet.create({
   legendColor: { width: 12, height: 12, borderRadius: 6, marginRight: 6 },
   legendText: { fontSize: 12, color: "#64748B" },
   lastUpdated: { fontSize: 12, color: "#94A3B8", textAlign: "center", marginBottom: 20 },
-  
+
   summaryCard: {
     backgroundColor: "#bebec0",
     padding: 20,
@@ -348,7 +350,7 @@ const styles = StyleSheet.create({
   },
   linkText: {
     color: "#64748B",
-    textAlign: "center",  
+    textAlign: "center",
     fontSize: 15,
     marginBottom: 20
   },

@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import tokenStorage from "../storage/token";
 import authService from "../services/authService";
+import { setLogoutHandler } from "../api/api";
+import useReadingsStore from "./readingsStore";
 
 const useAuthStore = create((set, get) => ({
 	user: null,
@@ -45,6 +47,7 @@ const useAuthStore = create((set, get) => ({
 
 	logout: async () => {
 		await authService.logout();
+		useReadingsStore.getState().clearReadings();
 		set({ user: null, token: null, isAuthenticated: false });
 	},
 
@@ -54,3 +57,6 @@ const useAuthStore = create((set, get) => ({
 }));
 
 export default useAuthStore;
+
+// Link API logout 401 to store logout
+setLogoutHandler(() => useAuthStore.getState().logout());

@@ -12,12 +12,12 @@ export default function Dashboard() {
   const { setStats } = useReadingsStore();
 
   const { data: stats, isLoading } = useQuery({
-    queryKey: ["stats"],
+    queryKey: ["stats", user?.id],
     queryFn: async () => {
       const { data } = await api.get("/readings/stats");
       return data;
     },
-    enabled: !!user, 
+    enabled: !!user,
   });
 
   useEffect(() => {
@@ -33,8 +33,10 @@ export default function Dashboard() {
     );
   }
 
-  
-  const status = getBPStatus(stats?.latest?.systolic, stats?.latest?.diastolic);
+
+  const status = stats?.latest
+    ? getBPStatus(stats.latest.systolic, stats.latest.diastolic)
+    : { label: "No Data", color: "#64748B" };
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -58,14 +60,22 @@ export default function Dashboard() {
           </View>
         </View>
 
-        <Text style={styles.statValue}>
-          {stats.latest.systolic}
-          <Text style={styles.unit}>/{stats.latest.diastolic}</Text>
-        </Text>
+        {stats?.latest ? (
+          <>
+            <Text style={styles.statValue}>
+              {stats.latest.systolic}
+              <Text style={styles.unit}>/{stats.latest.diastolic}</Text>
+            </Text>
 
-        <Text style={styles.statSub}>
-          ❤️ {stats.latest.pulse} BPM
-        </Text>
+            <Text style={styles.statSub}>
+              ❤️ {stats.latest.pulse} BPM
+            </Text>
+          </>
+        ) : (
+          <Text style={[styles.statValue, { fontSize: 24, marginTop: 20 }]}>
+            No readings yet
+          </Text>
+        )}
 
         <View style={styles.divider} />
 
@@ -73,15 +83,15 @@ export default function Dashboard() {
           <View style={styles.gridItem}>
             <Text style={styles.gridLabel}>Average BP</Text>
             <Text style={styles.gridValue}>
-              {Math.round(stats.stats.avgSystolic)}/
-              {Math.round(stats.stats.avgDiastolic)}
+              {stats?.stats?.avgSystolic ? Math.round(stats.stats.avgSystolic) : "--"}/
+              {stats?.stats?.avgDiastolic ? Math.round(stats.stats.avgDiastolic) : "--"}
             </Text>
           </View>
 
           <View style={styles.gridItem}>
             <Text style={styles.gridLabel}>Avg. Pulse</Text>
             <Text style={styles.gridValue}>
-              {Math.round(stats.stats.avgPulse)} bpm
+              {stats?.stats?.avgPulse ? Math.round(stats.stats.avgPulse) + " bpm" : "--"}
             </Text>
           </View>
         </View>
@@ -140,91 +150,137 @@ export default function Dashboard() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1,
-     backgroundColor: "#F8FAFC",
-      paddingHorizontal: 24, 
-      paddingTop: 50 },
-  center: { flex: 1,
-     justifyContent: 'center',
-      alignItems: 'center' },
+  container: {
+    flex: 1,
+    backgroundColor: "#F8FAFC",
+    paddingHorizontal: 24,
+    paddingTop: 50
+  },
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   headerSection: { marginBottom: 24 },
-  welcome: { fontSize: 28, fontWeight: "800",
-     color: "#1E293B" },
-  subtitle: { fontSize: 16,
-     color: "#64748B",
-      marginTop: 4 },
-  
-  statsCard: { backgroundColor: "#1E293B", 
+  welcome: {
+    fontSize: 28, fontWeight: "800",
+    color: "#1E293B"
+  },
+  subtitle: {
+    fontSize: 16,
+    color: "#64748B",
+    marginTop: 4
+  },
+
+  statsCard: {
+    backgroundColor: "#1E293B",
     borderRadius: 28,
-     padding: 24,
-      elevation: 8 },
-  statsHeader: { flexDirection: 'row',
-     justifyContent: 'space-between',
-      alignItems: 'center' },
-  statTitle: { color: "#94A3B8", 
+    padding: 24,
+    elevation: 8
+  },
+  statsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  statTitle: {
+    color: "#94A3B8",
     fontWeight: "600",
-     textTransform: 'uppercase',
-      letterSpacing: 1,
-       fontSize: 12 },
-  statusBadge: { paddingHorizontal: 10,
-     paddingVertical: 4,
-      borderRadius: 8 },
-  statusText: { fontSize: 12,
-     fontWeight: "700" },
-  statValue: { fontSize: 48,
-     fontWeight: "800",
-      color: "#FFFFFF",
-       marginVertical: 8 },
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    fontSize: 12
+  },
+  statusBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: "700"
+  },
+  statValue: {
+    fontSize: 48,
+    fontWeight: "800",
+    color: "#FFFFFF",
+    marginVertical: 8
+  },
   unit: { fontSize: 24, color: "#94A3B8" },
-  statSub: { color: "#E11D48",
-     fontSize: 18,
-      fontWeight: "600" },
-  divider: { height: 1,
-     backgroundColor: "#334155",
-      marginVertical: 20 },
+  statSub: {
+    color: "#E11D48",
+    fontSize: 18,
+    fontWeight: "600"
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#334155",
+    marginVertical: 20
+  },
   grid: { flexDirection: 'row' },
   gridItem: { flex: 1 },
-  gridLabel: { color: "#94A3B8",
-     fontSize: 11, marginBottom: 4,
-      textTransform: 'uppercase' },
-  gridValue: { color: "#FFFFFF", 
+  gridLabel: {
+    color: "#94A3B8",
+    fontSize: 11, marginBottom: 4,
+    textTransform: 'uppercase'
+  },
+  gridValue: {
+    color: "#FFFFFF",
     fontSize: 18,
-     fontWeight: "700" },
+    fontWeight: "700"
+  },
 
-  menuSection: { marginTop: 20,
-     marginBottom: 50 },
-  primaryButton: { backgroundColor: "#0dbb78c4",
-     padding: 18,
-      borderRadius: 18,
-       alignItems: "center",
-        marginBottom: 12 },
-  primaryButtonText: { color: "#fff",
-     fontSize: 16,
-      fontWeight: "700" },
-  row: { flexDirection: 'row',
-     justifyContent: 'space-between',
-      marginBottom: 12 },
-  secondaryButton: { backgroundColor: "#fff",
-     padding: 14, 
-     borderRadius: 12,
-      alignItems: "center",
-       borderWidth: 1,
-        borderColor: "#E2E8F0", 
-        width: '48%' },
-  fullWidthButton: { backgroundColor: "#fff",
-     padding: 14,
-      borderRadius: 12,
-       alignItems: "center",
-        borderWidth: 1,
-         borderColor: "#E2E8F0",
-          width: '100%',
-           marginBottom: 12 },
-  secondaryButtonText: { color: "#1E293B",
-     fontSize: 15, fontWeight: "700" },
-  logout: { marginTop: 6,
-     alignItems: 'center',
-      paddingBottom: 20 },
-  logoutText: { color: "#94A3B8",
-     fontWeight: "600", 
-     fontSize: 14 }
+  menuSection: {
+    marginTop: 20,
+    marginBottom: 50
+  },
+  primaryButton: {
+    backgroundColor: "#0dbb78c4",
+    padding: 18,
+    borderRadius: 18,
+    alignItems: "center",
+    marginBottom: 12
+  },
+  primaryButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "700"
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12
+  },
+  secondaryButton: {
+    backgroundColor: "#fff",
+    padding: 14,
+    borderRadius: 12,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    width: '48%'
+  },
+  fullWidthButton: {
+    backgroundColor: "#fff",
+    padding: 14,
+    borderRadius: 12,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    width: '100%',
+    marginBottom: 12
+  },
+  secondaryButtonText: {
+    color: "#1E293B",
+    fontSize: 15, fontWeight: "700"
+  },
+  logout: {
+    marginTop: 6,
+    alignItems: 'center',
+    paddingBottom: 20
+  },
+  logoutText: {
+    color: "#94A3B8",
+    fontWeight: "600",
+    fontSize: 14
+  }
 });

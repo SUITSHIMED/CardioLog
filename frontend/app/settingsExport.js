@@ -7,6 +7,7 @@ import api from "../src/api/api";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 import { Ionicons } from "@expo/vector-icons";
+import { useAuthStore } from "../src/stores";
 
 import { generateCardioReportHTML } from "../src/utils/pdf/cardioReportTemplate";
 
@@ -15,6 +16,7 @@ const SETTINGS_KEY = "app_settings";
 export default function SettingsExport() {
   const [unit, setUnit] = useState("mmHg");
   const [exporting, setExporting] = useState(false);
+  const { user } = useAuthStore();
 
   useEffect(() => {
     AsyncStorage.getItem(SETTINGS_KEY).then((stored) => {
@@ -30,11 +32,12 @@ export default function SettingsExport() {
   }, [unit]);
 
   const { data: readings } = useQuery({
-    queryKey: ["readings"],
+    queryKey: ["readings", user?.id],
     queryFn: async () => {
       const { data } = await api.get("/readings/my");
       return data;
     },
+    enabled: !!user,
   });
 
   const handleExportPDF = async () => {

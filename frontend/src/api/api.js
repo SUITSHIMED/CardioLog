@@ -1,9 +1,13 @@
 import axios from "axios";
 import tokenStorage from "../storage/token";
-import { useAuthStore } from "../stores"; 
+let logoutHandler = null;
 
-const BASE_URL = __DEV__
-    ? "http://192.168.1.104:3000/api" 
+export const setLogoutHandler = (handler) => {
+    logoutHandler = handler;
+};
+
+export const BASE_URL = __DEV__
+    ? "http://192.168.1.104:3000/api"
     : "https://cardiolog-production.up.railway.app/api";
 
 const api = axios.create({
@@ -24,8 +28,9 @@ api.interceptors.response.use(
     async (error) => {
         if (error.response?.status === 401) {
             console.warn("Session expired. Logging out...");
-            const { logout } = useAuthStore.getState(); 
-            await logout();
+            if (logoutHandler) {
+                await logoutHandler();
+            }
         }
 
         console.error("API Error:", {

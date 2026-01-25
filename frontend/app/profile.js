@@ -26,7 +26,7 @@ const updateUserProfile = async (newData) => {
 
 export default function MedicalProfile() {
   const queryClient = useQueryClient();
-  const { setUser } = useAuthStore();
+  const { user, setUser } = useAuthStore();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -37,8 +37,9 @@ export default function MedicalProfile() {
   });
 
   const { data: profile, isLoading, error } = useQuery({
-    queryKey: ["profile"],
+    queryKey: ["profile", user?.id],
     queryFn: fetchUserProfile,
+    enabled: !!user,
   });
 
   useEffect(() => {
@@ -57,7 +58,7 @@ export default function MedicalProfile() {
     mutationFn: updateUserProfile,
     onSuccess: (updatedProfile) => {
       setUser(updatedProfile);
-      queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: ["profile", user?.id] });
       Alert.alert("Success", "Profile updated successfully!");
     },
     onError: (error) => {

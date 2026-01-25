@@ -1,11 +1,7 @@
 import { View, TextInput, Alert, StyleSheet, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import axios from "axios";
-
-const BASE_URL = __DEV__
-	? "http://192.168.1.136:3000/api" 
-	: "https://cardiolog-production.up.railway.app/api";
+import api from "../src/api/api";
 
 export default function Register() {
   const router = useRouter();
@@ -15,27 +11,27 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
 
   const register = async () => {
-    
+
     if (!name.trim() || !email.trim() || !password.trim()) {
       Alert.alert("Error", "Please fill all fields");
       return;
     }
-    
+
     if (password.length < 6) {
       Alert.alert("Error", "Password must be at least 6 characters");
       return;
     }
 
     setLoading(true);
-    
+
     try {
 
-      const { data } = await axios.post(`${BASE_URL}/auth/register`, {
-        email: email.trim(), 
-        password: password.trim(), 
-        name: name.trim() 
+      const { data } = await api.post(`/auth/register`, {
+        email: email.trim(),
+        password: password.trim(),
+        name: name.trim()
       });
-      
+
       Alert.alert("Success", "Account created successfully!");
       router.replace("/login");
     } catch (err) {
@@ -50,36 +46,36 @@ export default function Register() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Create Account</Text>
-      
-      <TextInput 
-        style={styles.input} 
-        placeholder="Full Name" 
+
+      <TextInput
+        style={styles.input}
+        placeholder="Full Name"
         value={name}
         onChangeText={setName}
         editable={!loading}
       />
-      
-      <TextInput 
-        style={styles.input} 
-        placeholder="Email" 
+
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
         value={email}
-        onChangeText={setEmail} 
-        keyboardType="email-address" 
+        onChangeText={setEmail}
+        keyboardType="email-address"
         autoCapitalize="none"
         editable={!loading}
       />
-      
-      <TextInput 
-        style={styles.input} 
-        placeholder="Password (min 6 characters)" 
+
+      <TextInput
+        style={styles.input}
+        placeholder="Password (min 6 characters)"
         value={password}
-        secureTextEntry 
+        secureTextEntry
         onChangeText={setPassword}
         editable={!loading}
       />
-      
-      <TouchableOpacity 
-        style={[styles.button, loading && styles.buttonDisabled]} 
+
+      <TouchableOpacity
+        style={[styles.button, loading && styles.buttonDisabled]}
         onPress={register}
         disabled={loading}
       >
@@ -98,11 +94,11 @@ export default function Register() {
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: "#F8FAFC", 
-    justifyContent: "center", 
-    padding: 24 
+  container: {
+    flex: 1,
+    backgroundColor: "#F8FAFC",
+    justifyContent: "center",
+    padding: 24
   },
   card: {
     backgroundColor: "#FFFFFF",
@@ -114,10 +110,10 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 5,
   },
-  title: { 
-    fontSize: 32, 
-    fontWeight: "800", 
-    color: "#1E293B", 
+  title: {
+    fontSize: 32,
+    fontWeight: "800",
+    color: "#1E293B",
     textAlign: "center",
     letterSpacing: -0.5
   },
@@ -138,19 +134,19 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     marginLeft: 4
   },
-  input: { 
-    backgroundColor: "#F1F5F9", 
-    padding: 16, 
-    borderRadius: 12, 
+  input: {
+    backgroundColor: "#F1F5F9",
+    padding: 16,
+    borderRadius: 12,
     fontSize: 16,
     color: "#1E293B",
     borderWidth: 1,
     borderColor: "#E2E8F0"
   },
-  button: { 
-    backgroundColor: "#0dbb78c4", 
-    padding: 18, 
-    borderRadius: 12, 
+  button: {
+    backgroundColor: "#0dbb78c4",
+    padding: 18,
+    borderRadius: 12,
     alignItems: "center",
     marginTop: 12,
     shadowColor: "#0dbb78c4",
@@ -159,11 +155,15 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4
   },
-  buttonText: { color: "#fff",
-     fontSize: 16, 
-     fontWeight: "700" },
-  linkText: { color: "#64748B",
-     marginTop: 24,
-      textAlign: "center",
-       fontSize: 15 }
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "700"
+  },
+  linkText: {
+    color: "#64748B",
+    marginTop: 24,
+    textAlign: "center",
+    fontSize: 15
+  }
 });
